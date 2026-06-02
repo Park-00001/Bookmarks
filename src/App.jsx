@@ -616,7 +616,7 @@ export default function App() {
           <div style={{width:32,height:32,borderRadius:9,
             background:"linear-gradient(135deg,#6366f1,#8b5cf6)",
             display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,
-            boxShadow:"0 2px 8px rgba(99,102,241,.35)"}}>🚢</div>
+            boxShadow:"0 2px 8px rgba(99,102,241,.35)"}}>🏢</div>
           {/* v32 - 일괄변경 디버그 */}
           {editingTitle ? (
             <input autoFocus value={data.title || ""}
