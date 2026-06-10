@@ -6,7 +6,7 @@ const ICON_LIST = ["🤖","📦","🚢","⚓","🔎","📰","🏛","💱","📋"
 const ACCENT_COLORS = ["#7c3aed","#2563eb","#0284c7","#059669","#d97706","#dc2626","#be185d","#16a34a","#ea580c","#0891b2","#9333ea","#65a30d"];
 
 const DEFAULT_DATA = {
-  title: "CSR 바로가기",
+  title: "한불 바로가기",
   categories: [
     { id:"ai", label:"AI", icon:"🤖", color:"#7c3aed" },
     { id:"dow", label:"DOW & 지수", icon:"📌", color:"#2563eb" },
