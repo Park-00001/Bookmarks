@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { supabase } from "./supabase";
 
 const ICON_LIST = ["🤖","📦","🚢","⚓","🔎","📰","🏛","💱","📋","🔗","📊","📝","💬","⚙️","🎯","📌","☁️","🌐","🔑","🏢","✉️","📈","📉","🎨","🐙","🎥","📚","🔧","📱","🌍","🏦","📮","🗂","📁","🔐","🛳","✈️","🚛","🏗","📜"];
@@ -517,10 +517,8 @@ export default function App() {
 
   const [isLoaded, setIsLoaded] = useState(false);
   const [saveStatus, setSaveStatus] = useState("idle");
-  // 마지막으로 Supabase에서 받은 데이터의 시각 (충돌 감지용)
-  const [lastSyncedAt, setLastSyncedAt] = useState(null);
-  // 페이지가 백그라운드/활성화 상태인지 추적
-  const [needsRefresh, setNeedsRefresh] = useState(false);
+  // 저장 직후 자기 저장 데이터가 다시 돌아오는 echo 방지용 ref
+  const lastSavedDataRef = useRef(null);
 
   // ── 앱 시작 시 Supabase에서 자동 불러오기
   useEffect(() => {
@@ -528,13 +526,13 @@ export default function App() {
       try {
         const { data: row, error } = await supabase
           .from("bookmarks")
-          .select("data, updated_at")
+          .select("data")
           .eq("id", "main")
           .single();
         if (!error && row && row.data) {
           if (row.data.categories && row.data.sites) {
+            lastSavedDataRef.current = JSON.stringify(row.data);
             setData(row.data);
-            setLastSyncedAt(row.updated_at); // 서버 시각 저장
           }
         }
       } catch (e) {
@@ -545,23 +543,23 @@ export default function App() {
     })();
   }, []);
 
-  // ── 페이지 가시성 변화 감지 (탭 전환, 컴퓨터 절전 깨어남 등)
+  // ── 페이지 복귀 시 서버 최신 데이터 받아오기
   useEffect(() => {
     const handleVisibilityChange = async () => {
       if (document.visibilityState === "visible" && isLoaded) {
-        // 페이지가 다시 활성화되면 서버 데이터 강제 재확인
         try {
           const { data: row, error } = await supabase
             .from("bookmarks")
-            .select("data, updated_at")
+            .select("data")
             .eq("id", "main")
             .single();
-          if (!error && row && row.data) {
-            // 서버 데이터가 더 최신이면 무조건 받아오기
-            if (lastSyncedAt && row.updated_at !== lastSyncedAt) {
-              console.log("[복귀 동기화] 서버에 새 데이터 발견, 갱신합니다");
+          if (!error && row && row.data && row.data.categories && row.data.sites) {
+            const remoteStr = JSON.stringify(row.data);
+            // 마지막 저장 데이터와 다르면 서버 데이터로 갱신
+            if (remoteStr !== lastSavedDataRef.current) {
+              console.log("[복귀 동기화] 서버 데이터로 갱신");
+              lastSavedDataRef.current = remoteStr;
               setData(row.data);
-              setLastSyncedAt(row.updated_at);
             }
           }
         } catch (e) {
@@ -575,51 +573,27 @@ export default function App() {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       window.removeEventListener("focus", handleVisibilityChange);
     };
-  }, [isLoaded, lastSyncedAt]);
+  }, [isLoaded]);
 
-  // ── 데이터 변경 시 Supabase에 자동 저장 (충돌 감지 포함)
+  // ── 데이터 변경 시 Supabase에 자동 저장 (echo 방지)
   useEffect(() => {
     if (!isLoaded) return;
+
+    const currentDataStr = JSON.stringify(data);
+
+    // 마지막으로 저장/수신한 데이터와 동일하면 저장 스킵 (무한 루프 방지)
+    if (currentDataStr === lastSavedDataRef.current) {
+      return;
+    }
+
     setSaveStatus("saving");
     const timer = setTimeout(async () => {
       try {
-        // 1단계: 저장 전, 서버의 최신 updated_at 확인
-        const { data: serverRow, error: checkError } = await supabase
-          .from("bookmarks")
-          .select("updated_at")
-          .eq("id", "main")
-          .single();
-
-        if (checkError) throw checkError;
-
-        // 2단계: 서버 시각이 내가 마지막으로 받은 시각보다 더 새로우면 = 충돌!
-        if (serverRow && lastSyncedAt && serverRow.updated_at !== lastSyncedAt) {
-          console.warn("[저장 차단] 서버에 더 최신 데이터가 있어 저장을 막습니다. 최신 데이터를 가져옵니다.");
-          // 서버 데이터를 받아오고 저장 취소
-          const { data: latestRow } = await supabase
-            .from("bookmarks")
-            .select("data, updated_at")
-            .eq("id", "main")
-            .single();
-          if (latestRow && latestRow.data && latestRow.data.categories && latestRow.data.sites) {
-            setData(latestRow.data);
-            setLastSyncedAt(latestRow.updated_at);
-          }
-          setSaveStatus("error");
-          alert("⚠️ 다른 사용자가 먼저 변경한 내용이 있어 자동으로 최신 데이터를 불러왔습니다.\n다시 시도해주세요.");
-          setTimeout(() => setSaveStatus("idle"), 2000);
-          return;
-        }
-
-        // 3단계: 충돌 없음 → 저장
-        const newTimestamp = new Date().toISOString();
         const { error } = await supabase
           .from("bookmarks")
-          .upsert({ id: "main", data: data, updated_at: newTimestamp });
+          .upsert({ id: "main", data: data, updated_at: new Date().toISOString() });
         if (error) throw error;
-
-        // 4단계: 저장 성공 → lastSyncedAt 갱신
-        setLastSyncedAt(newTimestamp);
+        lastSavedDataRef.current = currentDataStr; // 저장 완료 기록
         setSaveStatus("saved");
         setTimeout(() => setSaveStatus("idle"), 1500);
       } catch (e) {
@@ -629,9 +603,9 @@ export default function App() {
       }
     }, 500); // 0.5초 디바운스
     return () => clearTimeout(timer);
-  }, [data, isLoaded, lastSyncedAt]);
+  }, [data, isLoaded]);
 
-  // ── Supabase Realtime - 다른 사용자의 변경사항 즉시 동기화
+  // ── Supabase Realtime - 다른 사용자의 변경사항 즉시 동기화 (echo 방지)
   useEffect(() => {
     if (!isLoaded) return;
     const channel = supabase
@@ -640,19 +614,22 @@ export default function App() {
         "postgres_changes",
         { event: "*", schema: "public", table: "bookmarks", filter: "id=eq.main" },
         (payload) => {
-          if (payload.new && payload.new.data && saveStatus === "idle") {
+          if (payload.new && payload.new.data && payload.new.data.categories && payload.new.data.sites) {
             const remoteStr = JSON.stringify(payload.new.data);
-            const localStr = JSON.stringify(data);
-            if (remoteStr !== localStr) {
-              setData(payload.new.data);
-              setLastSyncedAt(payload.new.updated_at); // 서버 시각 갱신
+            // 내가 방금 저장한 데이터가 다시 돌아온 거면 무시 (echo 방지)
+            if (remoteStr === lastSavedDataRef.current) {
+              return;
             }
+            // 다른 사용자가 변경한 데이터 → 받아오기
+            console.log("[실시간 동기화] 다른 사용자의 변경 받음");
+            lastSavedDataRef.current = remoteStr;
+            setData(payload.new.data);
           }
         }
       )
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  }, [data, isLoaded, saveStatus]);
+  }, [isLoaded]);
 
   const filtered = useMemo(()=>data.sites.filter(s=>{
     const matchCat = activeCat==="all"||s.category===activeCat;
