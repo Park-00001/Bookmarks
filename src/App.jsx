@@ -517,6 +517,10 @@ export default function App() {
 
   const [isLoaded, setIsLoaded] = useState(false);
   const [saveStatus, setSaveStatus] = useState("idle");
+  // 마지막으로 Supabase에서 받은 데이터의 시각 (충돌 감지용)
+  const [lastSyncedAt, setLastSyncedAt] = useState(null);
+  // 페이지가 백그라운드/활성화 상태인지 추적
+  const [needsRefresh, setNeedsRefresh] = useState(false);
 
   // ── 앱 시작 시 Supabase에서 자동 불러오기
   useEffect(() => {
@@ -524,12 +528,13 @@ export default function App() {
       try {
         const { data: row, error } = await supabase
           .from("bookmarks")
-          .select("data")
+          .select("data, updated_at")
           .eq("id", "main")
           .single();
         if (!error && row && row.data) {
           if (row.data.categories && row.data.sites) {
             setData(row.data);
+            setLastSyncedAt(row.updated_at); // 서버 시각 저장
           }
         }
       } catch (e) {
@@ -540,16 +545,81 @@ export default function App() {
     })();
   }, []);
 
-  // ── 데이터 변경 시 Supabase에 자동 저장
+  // ── 페이지 가시성 변화 감지 (탭 전환, 컴퓨터 절전 깨어남 등)
+  useEffect(() => {
+    const handleVisibilityChange = async () => {
+      if (document.visibilityState === "visible" && isLoaded) {
+        // 페이지가 다시 활성화되면 서버 데이터 강제 재확인
+        try {
+          const { data: row, error } = await supabase
+            .from("bookmarks")
+            .select("data, updated_at")
+            .eq("id", "main")
+            .single();
+          if (!error && row && row.data) {
+            // 서버 데이터가 더 최신이면 무조건 받아오기
+            if (lastSyncedAt && row.updated_at !== lastSyncedAt) {
+              console.log("[복귀 동기화] 서버에 새 데이터 발견, 갱신합니다");
+              setData(row.data);
+              setLastSyncedAt(row.updated_at);
+            }
+          }
+        } catch (e) {
+          console.error("재동기화 실패", e);
+        }
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("focus", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("focus", handleVisibilityChange);
+    };
+  }, [isLoaded, lastSyncedAt]);
+
+  // ── 데이터 변경 시 Supabase에 자동 저장 (충돌 감지 포함)
   useEffect(() => {
     if (!isLoaded) return;
     setSaveStatus("saving");
     const timer = setTimeout(async () => {
       try {
+        // 1단계: 저장 전, 서버의 최신 updated_at 확인
+        const { data: serverRow, error: checkError } = await supabase
+          .from("bookmarks")
+          .select("updated_at")
+          .eq("id", "main")
+          .single();
+
+        if (checkError) throw checkError;
+
+        // 2단계: 서버 시각이 내가 마지막으로 받은 시각보다 더 새로우면 = 충돌!
+        if (serverRow && lastSyncedAt && serverRow.updated_at !== lastSyncedAt) {
+          console.warn("[저장 차단] 서버에 더 최신 데이터가 있어 저장을 막습니다. 최신 데이터를 가져옵니다.");
+          // 서버 데이터를 받아오고 저장 취소
+          const { data: latestRow } = await supabase
+            .from("bookmarks")
+            .select("data, updated_at")
+            .eq("id", "main")
+            .single();
+          if (latestRow && latestRow.data && latestRow.data.categories && latestRow.data.sites) {
+            setData(latestRow.data);
+            setLastSyncedAt(latestRow.updated_at);
+          }
+          setSaveStatus("error");
+          alert("⚠️ 다른 사용자가 먼저 변경한 내용이 있어 자동으로 최신 데이터를 불러왔습니다.\n다시 시도해주세요.");
+          setTimeout(() => setSaveStatus("idle"), 2000);
+          return;
+        }
+
+        // 3단계: 충돌 없음 → 저장
+        const newTimestamp = new Date().toISOString();
         const { error } = await supabase
           .from("bookmarks")
-          .upsert({ id: "main", data: data, updated_at: new Date().toISOString() });
+          .upsert({ id: "main", data: data, updated_at: newTimestamp });
         if (error) throw error;
+
+        // 4단계: 저장 성공 → lastSyncedAt 갱신
+        setLastSyncedAt(newTimestamp);
         setSaveStatus("saved");
         setTimeout(() => setSaveStatus("idle"), 1500);
       } catch (e) {
@@ -559,7 +629,7 @@ export default function App() {
       }
     }, 500); // 0.5초 디바운스
     return () => clearTimeout(timer);
-  }, [data, isLoaded]);
+  }, [data, isLoaded, lastSyncedAt]);
 
   // ── Supabase Realtime - 다른 사용자의 변경사항 즉시 동기화
   useEffect(() => {
@@ -575,6 +645,7 @@ export default function App() {
             const localStr = JSON.stringify(data);
             if (remoteStr !== localStr) {
               setData(payload.new.data);
+              setLastSyncedAt(payload.new.updated_at); // 서버 시각 갱신
             }
           }
         }
@@ -616,7 +687,7 @@ export default function App() {
           <div style={{width:32,height:32,borderRadius:9,
             background:"linear-gradient(135deg,#6366f1,#8b5cf6)",
             display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,
-            boxShadow:"0 2px 8px rgba(99,102,241,.35)"}}>🏢</div>
+            boxShadow:"0 2px 8px rgba(99,102,241,.35)"}}>🚢</div>
           {/* v32 - 일괄변경 디버그 */}
           {editingTitle ? (
             <input autoFocus value={data.title || ""}
