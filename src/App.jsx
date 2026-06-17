@@ -13,85 +13,104 @@ const DEFAULT_DATA = {
     { id:"carrier", label:"선사", icon:"🚢", color:"#0284c7" },
     { id:"terminal", label:"터미널", icon:"⚓", color:"#059669" },
     { id:"tracking", label:"기타 (TRACKING)", icon:"🔎", color:"#d97706" },
-    { id:"customs", label:"관세 (법령)", icon:"🏛", color:"#6d28d9" },
+    { id:"customs", label:"관세 (법령)", icon:"🏦", color:"#6d28d9" },
     { id:"forex", label:"환율", icon:"💱", color:"#16a34a" },
     { id:"docs", label:"기타 (서류 등)", icon:"📋", color:"#ea580c" },
     { id:"news", label:"물류뉴스", icon:"📰", color:"#dc2626" },
+    { id:"cat_1780376892224", label:"회계팀", icon:"📁", color:"#6366f1" },
+    { id:"cat_1780376895498", label:"물류팀", icon:"📁", color:"#6366f1" },
+    { id:"cat_1780376904895", label:"거래처 ERP 사이트", icon:"📁", color:"#6366f1" },
   ],
   sites: [
     { id:1, name:"Claude", url:"https://claude.ai/login", category:"ai", icon:"🤖", color:"#7c3aed", desc:"Anthropic AI 어시스턴트" },
-    { id:2, name:"ChatGPT", url:"https://chatgpt.com/", category:"ai", icon:"🤖", color:"#10A37F", desc:"OpenAI GPT-4o" },
-    { id:3, name:"Gemini", url:"https://gemini.google.com/app?hl=ko", category:"ai", icon:"🤖", color:"#4285F4", desc:"Google Gemini" },
-    { id:20, name:"Maersk", url:"https://www.maersk.com/tracking/", category:"carrier", icon:"🚢", color:"#42B0D5", desc:"머스크 화물 추적" },
-    { id:21, name:"MSC", url:"https://www.msc.com/", category:"carrier", icon:"🚢", color:"#E3001B", desc:"Global Container Shipping" },
-    { id:22, name:"CMA CGM", url:"https://www.cma-cgm.com/ebusiness/tracking", category:"carrier", icon:"🚢", color:"#E30613", desc:"CMA CGM 화물 추적" },
-    { id:23, name:"Hapag-Lloyd", url:"https://www.hapag-lloyd.com/en/online-business/track/track-by-booking-solution.html", category:"carrier", icon:"🚢", color:"#E37222", desc:"하팍로이드 트래킹" },
-    { id:24, name:"HMM", url:"https://www.hmm21.com/e-service/general/DashBoard.do", category:"carrier", icon:"🚢", color:"#003087", desc:"현대상선 대시보드" },
-    { id:25, name:"ONE Line", url:"https://ecomm.one-line.com/one-ecom/manage-shipment/cargo-tracking", category:"carrier", icon:"🚢", color:"#E60083", desc:"Ocean Network Express" },
-    { id:26, name:"OOCL", url:"https://www.oocl.com/eng/ourservices/eservices/cargotracking/Pages/cargotracking.aspx", category:"carrier", icon:"🚢", color:"#003087", desc:"OOCL 화물 추적" },
-    { id:27, name:"COSCO", url:"https://elines.coscoshipping.com/ebusiness/cargoTracking", category:"carrier", icon:"🚢", color:"#CC0000", desc:"코스코 화물 추적" },
-    { id:28, name:"Evergreen", url:"https://www.shipmentlink.com/kr/", category:"carrier", icon:"🚢", color:"#007B40", desc:"에버그린 ShipmentLink" },
-    { id:29, name:"Yang Ming", url:"https://www.yangming.com/en", category:"carrier", icon:"🚢", color:"#005BAC", desc:"양밍 해운 (대만)" },
-    { id:30, name:"ZIM", url:"https://www.zim.com/tools/track-a-shipment", category:"carrier", icon:"🚢", color:"#003087", desc:"ZIM 화물 추적" },
-    { id:31, name:"eKMTC", url:"https://www.ekmtc.com/index.html#/main", category:"carrier", icon:"🚢", color:"#0066CC", desc:"고려해운 e-서비스" },
-    { id:32, name:"CKLINE", url:"https://es.ckline.co.kr/?cmd=SCH", category:"carrier", icon:"🚢", color:"#0047AB", desc:"장금상선 스케줄 조회" },
-    { id:33, name:"Sinokor", url:"https://ebiz.sinokor.co.kr/?lang=EN", category:"carrier", icon:"🚢", color:"#CC0000", desc:"흥아해운 e-Service" },
-    { id:34, name:"Heung-A", url:"https://ebiz.heungaline.com/", category:"carrier", icon:"🚢", color:"#003087", desc:"흥아라인 e-Service" },
-    { id:35, name:"SITC", url:"https://ebusiness.sitcline.com/#/home", category:"carrier", icon:"🚢", color:"#1565C0", desc:"SITC 운항 정보" },
-    { id:36, name:"Vanguard", url:"https://www.vanguardlogistics.com/", category:"carrier", icon:"🚢", color:"#1B4F72", desc:"Vanguard Logistics" },
-    { id:37, name:"myDSV", url:"https://mydsv.com/new/tracking/track-shipment", category:"carrier", icon:"🚢", color:"#E60000", desc:"DSV 화물 추적" },
-    { id:38, name:"NAIGAI Trans", url:"https://www.ntl-naigai.co.jp/guest/sailingschedule/en/search.html", category:"carrier", icon:"🚢", color:"#003087", desc:"나이가이 LCL 스케줄" },
-    { id:39, name:"WAN HAI", url:"https://th.wanhai.com/views/LocalMain.xhtml", category:"carrier", icon:"🚢", color:"#CC0000", desc:"완하이 라인 (대만)" },
-    { id:40, name:"SM Line", url:"https://esvc.smlines.com/smline/CUP_HOM_3301.do", category:"carrier", icon:"🚢", color:"#1565C0", desc:"SM Line 화물 추적" },
-    { id:41, name:"RCL (NGOW HOCK)", url:"https://eservice.rclgroup.com/CargoTracking/", category:"carrier", icon:"🚢", color:"#CC4400", desc:"Regional Container Lines" },
-    { id:50, name:"Hutchison Busan", url:"https://custom.hktl.com/jsp/T01/sunsuk.jsp", category:"terminal", icon:"⚓", color:"#E87722", desc:"허치슨 부산 신항" },
-    { id:51, name:"BPT", url:"https://info.bptc.co.kr/content/index.jsp", category:"terminal", icon:"⚓", color:"#1B5E9B", desc:"부산항터미널 정보조회" },
-    { id:52, name:"BCT", url:"https://info.bct2-4.com/infoservice/index.html", category:"terminal", icon:"⚓", color:"#0369a1", desc:"BCT 정보서비스" },
-    { id:53, name:"HPNT", url:"https://www.hpnt.co.kr/infoservice/main/mainPage.jsp", category:"terminal", icon:"⚓", color:"#003087", desc:"현대부산신항만 정보서비스" },
-    { id:54, name:"PNIT", url:"https://www.pnitl.com/infoservice/main/mainPage.jsp", category:"terminal", icon:"⚓", color:"#00529B", desc:"부산신항국제터미널 정보서비스" },
-    { id:55, name:"DGT", url:"https://info.dgtbusan.com/DGT/esvc", category:"terminal", icon:"⚓", color:"#CC6600", desc:"DGT 부산 정보조회" },
-    { id:56, name:"HJNC", url:"https://www.hjnc.co.kr/esvc", category:"terminal", icon:"⚓", color:"#0066B3", desc:"한진부산컨테이너 정보조회" },
-    { id:57, name:"BNCT", url:"https://info.bnctkorea.com/esvc", category:"terminal", icon:"⚓", color:"#1A3E6F", desc:"BNCT 정보조회서비스" },
-    { id:58, name:"PNC", url:"https://svc.pncport.com/info/Main.do", category:"terminal", icon:"⚓", color:"#004EA2", desc:"PNC 정보조회서비스" },
-    { id:59, name:"GWCT (광양)", url:"http://www.gwct.co.kr/sub/sub_B2", category:"terminal", icon:"⚓", color:"#006400", desc:"광양항서부컨테이너터미널" },
-    { id:60, name:"Hutchison 광양", url:"https://info.kitl.com/jsp/T01/sunsuk.jsp?mainType=T01&subType=01", category:"terminal", icon:"⚓", color:"#E87722", desc:"허치슨 광양 정보조회" },
-    { id:61, name:"SSIT (Terminal49)", url:"https://terminal49.com/terminals/vnsst-sp-ssa-international-terminal-ssit", category:"terminal", icon:"⚓", color:"#6C63FF", desc:"SP-SSA International Terminal" },
-    { id:62, name:"Terminal49", url:"https://terminal49.com/terminals", category:"terminal", icon:"⚓", color:"#6C63FF", desc:"전세계 터미널 디렉토리" },
-    { id:63, name:"트레드링스", url:"https://www.tradlinx.com/ko/container-terminal-schedule", category:"terminal", icon:"⚓", color:"#2563eb", desc:"실시간 컨테이너 터미널 스케줄" },
-    { id:70, name:"VesselFinder", url:"https://www.vesselfinder.com/", category:"tracking", icon:"🛳", color:"#1565C0", desc:"선박 실시간 위치 추적" },
-    { id:71, name:"MarineTraffic", url:"https://www.marinetraffic.com/en/ais/home/centerx:-12.0/centery:25.0/zoom:4", category:"tracking", icon:"🌍", color:"#0077CC", desc:"AIS 해상 교통 정보" },
-    { id:72, name:"DHL", url:"https://www.dhl.com/kr-ko/home.html", category:"tracking", icon:"🔎", color:"#FFCC00", desc:"DHL 글로벌 물류·배송" },
-    { id:73, name:"FedEx", url:"https://www.fedex.com/ko-kr/home.html", category:"tracking", icon:"🔎", color:"#4D148C", desc:"FedEx 특송 서비스" },
-    { id:80, name:"포워더케이알", url:"https://www.forwarder.kr/", category:"news", icon:"📰", color:"#1565C0", desc:"포워딩 업계 전문 뉴스" },
-    { id:81, name:"코리아포워더타임즈", url:"http://www.parcelherald.com/korean/index.php", category:"news", icon:"📰", color:"#CC0000", desc:"코리아포워더타임즈" },
-    { id:82, name:"한국관세물류협회", url:"https://www.kcla.kr/web/inc/html/4-1.asp", category:"news", icon:"📰", color:"#003087", desc:"KCLA 관세물류 협회" },
-    { id:83, name:"코리아쉬핑가제트", url:"https://www.ksg.co.kr/", category:"news", icon:"📰", color:"#C0392B", desc:"국내 대표 해운 전문지" },
-    { id:84, name:"카고뉴스", url:"https://www.cargonews.co.kr/", category:"news", icon:"📰", color:"#1A252F", desc:"CargoNews 물류 뉴스" },
-    { id:85, name:"무역협회 KITA", url:"https://www.kita.net/", category:"news", icon:"📰", color:"#003087", desc:"한국무역협회 KITA" },
-    { id:90, name:"UNI-PASS", url:"https://unipass.customs.go.kr/csp/index.do", category:"customs", icon:"🏛", color:"#1d4ed8", desc:"국가관세종합정보시스템" },
-    { id:91, name:"관세법령정보포털", url:"https://unipass.customs.go.kr/clip/index.do", category:"customs", icon:"🏛", color:"#374151", desc:"CLIP 관세법령 검색" },
-    { id:92, name:"화학물질정보처리", url:"https://kreach.me.go.kr/repwrt/index.do", category:"customs", icon:"🏛", color:"#15803d", desc:"화학물질정보처리시스템" },
-    { id:100, name:"서울외국환중개", url:"http://www.smbs.biz/", category:"forex", icon:"💱", color:"#1d4ed8", desc:"SMBS 외국환중개 환율" },
-    { id:101, name:"하나은행 환율", url:"https://www.kebhana.com/cont/mall/mall15/mall1502/index.jsp", category:"forex", icon:"💱", color:"#00A650", desc:"하나은행 평균환율" },
-    { id:102, name:"네이버 환율", url:"https://finance.naver.com/marketindex/", category:"forex", icon:"💱", color:"#03C75A", desc:"네이버 마켓인덱스 환율" },
-    { id:103, name:"XE.com", url:"https://www.xe.com", category:"forex", icon:"💱", color:"#1565C0", desc:"글로벌 환율 계산기" },
-    { id:10, name:"Dow Inc.", url:"https://www.dow.com/en-us", category:"dow", icon:"📌", color:"#cc0000", desc:"Materials Science for a Better Future" },
-    { id:1779862381116, name:"한국수입협회", url:"https://www.koimaindex.com/koimaindex/koima/item/index/retrieveList.do", category:"dow", icon:"📊", color:"#6366f1", desc:"국제원자재가격정보" },
-    { id:1779862607304, name:"Polyethylene", url:"https://ko.tradingeconomics.com/commodity/polyethylene", category:"dow", icon:"📊", color:"#6366f1", desc:"폴리에틸렌 지수" },
-    { id:1779862632564, name:"Polypropylene ", url:"https://ko.tradingeconomics.com/commodity/polypropylene", category:"dow", icon:"📊", color:"#6366f1", desc:"폴리프로필렌 지수" },
-    { id:11, name:"CEPEA Ethanol", url:"https://www.cepea.org.br/en/indicator/ethanol.aspx", category:"dow", icon:"📊", color:"#1e7a1e", desc:"에탄올 가격 지수 (브라질)" },
-    { id:110, name:"대한상공회의소", url:"https://cert.korcham.net/base/index.htm", category:"docs", icon:"📋", color:"#C0392B", desc:"원산지증명서 발급" },
-    { id:111, name:"uTradeHub", url:"https://www.utradehub.or.kr/porgw/index.jsp?sso=ok", category:"docs", icon:"📋", color:"#117A65", desc:"전자무역 서류 발급" },
-    { id:112, name:"WEHAGO", url:"https://www.wehago.com/", category:"docs", icon:"🏢", color:"#0066CC", desc:"더존 비즈니스 플랫폼" },
-    { id:113, name:"Ecount ERP", url:"https://loginac.ecount.com/ec5/view/erp?w_flag=1&ec_req_sid=AC-ESSRNzGCNoXKt#", category:"docs", icon:"🏢", color:"#FF6600", desc:"이카운트 ERP (디카본)" },
-    { id:114, name:"NICE BizLINE", url:"https://www.nicebizline.com/workspace/HO000", category:"docs", icon:"📋", color:"#003087", desc:"기업 신용정보 조회" },
-    { id:116, name:"오피스플러스", url:"https://www.officeplus.com/index_main_opa.jsp?site_code=OPA", category:"docs", icon:"📋", color:"#FF4500", desc:"기업 구매 비용절감 플랫폼" },
-    { id:117, name:"PolarisOffice", url:"https://www.polarisofficetools.com/", category:"docs", icon:"📄", color:"#0078D4", desc:"온라인 문서 편집 도구" },
-    { id:118, name:"Smallpdf", url:"https://smallpdf.com/kr#r=app", category:"docs", icon:"📄", color:"#E74C3C", desc:"PDF 변환·편집 도구" },
-    { id:75, name:"CBM Calculator", url:"https://www.cbmcalculator.com/", category:"docs", icon:"📐", color:"#E67E22", desc:"CBM Calculator" },
-    { id:119, name:"이미지 압축", url:"https://www.iloveimg.com/ko/compress-image", category:"docs", icon:"🖼️", color:"#E91E63", desc:"이미지 압축 (iLoveIMG)" },
-    { id:4, name:"DeepL", url:"https://www.deepl.com/ko/translator", category:"docs", icon:"🌐", color:"#003366", desc:"세계 최고 정확도 번역기" },
-    { id:6, name:"Google 번역", url:"https://translate.google.co.kr/?sl=auto&tl=ko&op=translate", category:"docs", icon:"🌐", color:"#EA4335", desc:"구글 번역" },
+    { id:2, name:"ChatGPT", url:"https://chatgpt.com/", category:"ai", icon:"🤖", color:"#7c3aed", desc:"OpenAI GPT-4o" },
+    { id:3, name:"Gemini", url:"https://gemini.google.com/app?hl=ko", category:"ai", icon:"🤖", color:"#7c3aed", desc:"Google Gemini" },
+    { id:20, name:"Maersk", url:"https://www.maersk.com/tracking/", category:"carrier", icon:"🚢", color:"#0284c7", desc:"머스크 트래킹" },
+    { id:21, name:"MSC", url:"https://www.msc.com/", category:"carrier", icon:"🚢", color:"#0284c7", desc:"MSC 트래킹" },
+    { id:22, name:"CMA CGM", url:"https://www.cma-cgm.com/ebusiness/tracking", category:"carrier", icon:"🚢", color:"#0284c7", desc:"CMA CGM 트래킹" },
+    { id:23, name:"Hapag-Lloyd", url:"https://www.hapag-lloyd.com/en/online-business/track/track-by-booking-solution.html", category:"carrier", icon:"🚢", color:"#0284c7", desc:"하팍로이드 트래킹" },
+    { id:24, name:"HMM", url:"https://www.hmm21.com/e-service/general/DashBoard.do", category:"carrier", icon:"🚢", color:"#0284c7", desc:"현대상선 트래킹" },
+    { id:25, name:"ONE Line", url:"https://ecomm.one-line.com/one-ecom/manage-shipment/cargo-tracking", category:"carrier", icon:"🚢", color:"#0284c7", desc:"ONE 트래킹" },
+    { id:26, name:"OOCL", url:"https://www.oocl.com/eng/ourservices/eservices/cargotracking/Pages/cargotracking.aspx", category:"carrier", icon:"🚢", color:"#0284c7", desc:"OOCL 트래킹" },
+    { id:27, name:"COSCO", url:"https://elines.coscoshipping.com/ebusiness/cargoTracking", category:"carrier", icon:"🚢", color:"#0284c7", desc:"코스코 트래킹" },
+    { id:28, name:"Evergreen", url:"https://www.shipmentlink.com/kr/", category:"carrier", icon:"🚢", color:"#0284c7", desc:"에버그린 트래킹" },
+    { id:29, name:"Yang Ming", url:"https://www.yangming.com/en", category:"carrier", icon:"🚢", color:"#0284c7", desc:"양밍 트래킹" },
+    { id:30, name:"ZIM", url:"https://www.zim.com/tools/track-a-shipment", category:"carrier", icon:"🚢", color:"#0284c7", desc:"ZIM 트래킹" },
+    { id:31, name:"eKMTC", url:"https://www.ekmtc.com/index.html#/main", category:"carrier", icon:"🚢", color:"#0284c7", desc:"고려해운 트래킹" },
+    { id:32, name:"CKLINE", url:"https://es.ckline.co.kr/?cmd=SCH", category:"carrier", icon:"🚢", color:"#0284c7", desc:"장금상선 트래킹" },
+    { id:33, name:"Sinokor", url:"https://ebiz.sinokor.co.kr/?lang=EN", category:"carrier", icon:"🚢", color:"#0284c7", desc:"Sinokor 트래킹" },
+    { id:34, name:"Heung-A", url:"https://ebiz.heungaline.com/", category:"carrier", icon:"🚢", color:"#0284c7", desc:"흥아라인 트래킹" },
+    { id:35, name:"SITC", url:"https://ebusiness.sitcline.com/#/home", category:"carrier", icon:"🚢", color:"#0284c7", desc:"SITC 트래킹" },
+    { id:36, name:"Vanguard", url:"https://www.vanguardlogistics.com/", category:"carrier", icon:"🚢", color:"#0284c7", desc:"Vanguard 트래킹" },
+    { id:37, name:"myDSV", url:"https://mydsv.com/new/tracking/track-shipment", category:"carrier", icon:"🚢", color:"#0284c7", desc:"DSV 트래킹" },
+    { id:38, name:"NAIGAI Trans", url:"https://www.ntl-naigai.co.jp/guest/sailingschedule/en/search.html", category:"carrier", icon:"🚢", color:"#0284c7", desc:"나이가이 트래킹" },
+    { id:39, name:"WAN HAI", url:"https://th.wanhai.com/views/LocalMain.xhtml", category:"carrier", icon:"🚢", color:"#0284c7", desc:"완하이 트래킹" },
+    { id:40, name:"SM Line", url:"https://esvc.smlines.com/smline/CUP_HOM_3301.do", category:"carrier", icon:"🚢", color:"#0284c7", desc:"SM Line 트래킹" },
+    { id:41, name:"RCL (NGOW HOCK)", url:"https://eservice.rclgroup.com/CargoTracking/", category:"carrier", icon:"🚢", color:"#0284c7", desc:"RCL 트래킹" },
+    { id:50, name:"Hutchison Busan", url:"https://custom.hktl.com/jsp/T01/sunsuk.jsp", category:"terminal", icon:"⚓", color:"#059669", desc:"허치슨 부산 신항" },
+    { id:51, name:"BPT", url:"https://info.bptc.co.kr/content/index.jsp", category:"terminal", icon:"⚓", color:"#059669", desc:"부산항터미널 정보조회" },
+    { id:52, name:"BCT", url:"https://info.bct2-4.com/infoservice/index.html", category:"terminal", icon:"⚓", color:"#059669", desc:"BCT 정보서비스" },
+    { id:53, name:"HPNT", url:"https://www.hpnt.co.kr/infoservice/main/mainPage.jsp", category:"terminal", icon:"⚓", color:"#059669", desc:"현대부산신항만 정보서비스" },
+    { id:54, name:"PNIT", url:"https://www.pnitl.com/infoservice/main/mainPage.jsp", category:"terminal", icon:"⚓", color:"#059669", desc:"부산신항국제터미널 정보서비스" },
+    { id:55, name:"DGT", url:"https://info.dgtbusan.com/DGT/esvc", category:"terminal", icon:"⚓", color:"#059669", desc:"DGT 부산 정보조회" },
+    { id:56, name:"HJNC", url:"https://www.hjnc.co.kr/esvc", category:"terminal", icon:"⚓", color:"#059669", desc:"한진부산컨테이너 정보조회" },
+    { id:57, name:"BNCT", url:"https://info.bnctkorea.com/esvc", category:"terminal", icon:"⚓", color:"#059669", desc:"BNCT 정보조회서비스" },
+    { id:58, name:"PNC", url:"https://svc.pncport.com/info/Main.do", category:"terminal", icon:"⚓", color:"#059669", desc:"PNC 정보조회서비스" },
+    { id:59, name:"GWCT (광양)", url:"http://www.gwct.co.kr/sub/sub_B2", category:"terminal", icon:"⚓", color:"#059669", desc:"광양항서부컨테이너터미널" },
+    { id:60, name:"Hutchison 광양", url:"https://info.kitl.com/jsp/T01/sunsuk.jsp?mainType=T01&subType=01", category:"terminal", icon:"⚓", color:"#059669", desc:"허치슨 광양 정보조회" },
+    { id:61, name:"SSIT (Terminal49)", url:"https://terminal49.com/terminals/vnsst-sp-ssa-international-terminal-ssit", category:"terminal", icon:"⚓", color:"#059669", desc:"SP-SSA International Terminal" },
+    { id:62, name:"Terminal49", url:"https://terminal49.com/terminals", category:"terminal", icon:"⚓", color:"#059669", desc:"전세계 터미널 디렉토리" },
+    { id:63, name:"트레드링스", url:"https://www.tradlinx.com/ko/container-terminal-schedule", category:"terminal", icon:"⚓", color:"#059669", desc:"실시간 컨테이너 터미널 스케줄" },
+    { id:70, name:"VesselFinder", url:"https://www.vesselfinder.com/", category:"tracking", icon:"🛳", color:"#d97706", desc:"선박 실시간 위치 추적" },
+    { id:71, name:"MarineTraffic", url:"https://www.marinetraffic.com/en/ais/home/centerx:-12.0/centery:25.0/zoom:4", category:"tracking", icon:"🌍", color:"#d97706", desc:"AIS 해상 교통 정보" },
+    { id:72, name:"DHL", url:"https://www.dhl.com/kr-ko/home.html", category:"tracking", icon:"🔎", color:"#d97706", desc:"DHL 글로벌 물류·배송" },
+    { id:73, name:"FedEx", url:"https://www.fedex.com/ko-kr/home.html", category:"tracking", icon:"🔎", color:"#d97706", desc:"FedEx 특송 서비스" },
+    { id:80, name:"포워더케이알", url:"https://www.forwarder.kr/", category:"news", icon:"📰", color:"#dc2626", desc:"포워딩 업계 전문 뉴스" },
+    { id:81, name:"코리아포워더타임즈", url:"http://www.parcelherald.com/korean/index.php", category:"news", icon:"📰", color:"#dc2626", desc:"코리아포워더타임즈" },
+    { id:82, name:"한국관세물류협회", url:"https://www.kcla.kr/web/inc/html/4-1.asp", category:"news", icon:"📰", color:"#dc2626", desc:"KCLA 관세물류 협회" },
+    { id:83, name:"코리아쉬핑가제트", url:"https://www.ksg.co.kr/", category:"news", icon:"📰", color:"#dc2626", desc:"국내 대표 해운 전문지" },
+    { id:84, name:"카고뉴스", url:"https://www.cargonews.co.kr/", category:"news", icon:"📰", color:"#dc2626", desc:"CargoNews 물류 뉴스" },
+    { id:85, name:"무역협회 KITA", url:"https://www.kita.net/", category:"news", icon:"📰", color:"#dc2626", desc:"한국무역협회 KITA" },
+    { id:90, name:"UNI-PASS", url:"https://unipass.customs.go.kr/csp/index.do", category:"customs", icon:"🏛", color:"#6d28d9", desc:"국가관세종합정보시스템" },
+    { id:91, name:"관세법령정보포털", url:"https://unipass.customs.go.kr/clip/index.do", category:"customs", icon:"🏛", color:"#6d28d9", desc:"CLIP 관세법령 검색" },
+    { id:92, name:"화학물질정보처리", url:"https://kreach.mcee.go.kr/repwrt/index.do", category:"customs", icon:"🏛", color:"#6d28d9", desc:"화학물질정보처리시스템" },
+    { id:100, name:"서울외국환중개", url:"http://www.smbs.biz/", category:"forex", icon:"💱", color:"#16a34a", desc:"SMBS 외국환중개 환율" },
+    { id:101, name:"하나은행 환율", url:"https://www.kebhana.com/cont/mall/mall15/mall1502/index.jsp", category:"forex", icon:"💱", color:"#16a34a", desc:"하나은행 평균환율" },
+    { id:102, name:"네이버 환율", url:"https://finance.naver.com/marketindex/", category:"forex", icon:"💱", color:"#16a34a", desc:"네이버 마켓인덱스 환율" },
+    { id:103, name:"XE.com", url:"https://www.xe.com", category:"forex", icon:"💱", color:"#16a34a", desc:"글로벌 환율 계산기" },
+    { id:10, name:"Dow Inc.", url:"https://www.dow.com/en-us", category:"dow", icon:"📌", color:"#2563eb", desc:"DOW Order" },
+    { id:1779862381116, name:"한국수입협회", url:"https://www.koimaindex.com/koimaindex/koima/item/index/retrieveList.do", category:"dow", icon:"📊", color:"#2563eb", desc:"국제원자재가격정보" },
+    { id:1779862607304, name:"Polyethylene", url:"https://ko.tradingeconomics.com/commodity/polyethylene", category:"dow", icon:"📊", color:"#2563eb", desc:"폴리에틸렌 지수" },
+    { id:1779862632564, name:"Polypropylene ", url:"https://ko.tradingeconomics.com/commodity/polypropylene", category:"dow", icon:"📊", color:"#2563eb", desc:"폴리프로필렌 지수" },
+    { id:11, name:"CEPEA Ethanol", url:"https://www.cepea.org.br/en/indicator/ethanol.aspx", category:"dow", icon:"📊", color:"#2563eb", desc:"에탄올 가격 지수 (브라질)" },
+    { id:110, name:"대한상공회의소", url:"https://cert.korcham.net/base/index.htm", category:"docs", icon:"📋", color:"#ea580c", desc:"원산지증명서 발급" },
+    { id:111, name:"uTradeHub", url:"https://www.utradehub.or.kr/porgw/index.jsp?sso=ok", category:"docs", icon:"📋", color:"#ea580c", desc:"전자무역 서류 발급" },
+    { id:112, name:"WEHAGO", url:"https://www.wehago.com/", category:"docs", icon:"🏢", color:"#ea580c", desc:"더존 비즈니스 플랫폼" },
+    { id:113, name:"Ecount ERP", url:"https://loginac.ecount.com/ec5/view/erp?w_flag=1&ec_req_sid=AC-ESSRNzGCNoXKt#", category:"docs", icon:"🏢", color:"#ea580c", desc:"이카운트 ERP (디카본)" },
+    { id:114, name:"NICE BizLINE", url:"https://www.nicebizline.com/workspace/HO000", category:"docs", icon:"📋", color:"#ea580c", desc:"기업 신용정보 조회" },
+    { id:116, name:"오피스플러스", url:"https://www.officeplus.com/index_main_opa.jsp?site_code=OPA", category:"docs", icon:"📋", color:"#ea580c", desc:"기업 구매 비용절감 플랫폼" },
+    { id:117, name:"PolarisOffice", url:"https://www.polarisofficetools.com/", category:"docs", icon:"📄", color:"#ea580c", desc:"온라인 문서 편집 도구" },
+    { id:118, name:"Smallpdf", url:"https://smallpdf.com/kr#r=app", category:"docs", icon:"📄", color:"#ea580c", desc:"PDF 변환·편집 도구" },
+    { id:75, name:"CBM Calculator", url:"https://www.cbmcalculator.com/", category:"docs", icon:"📐", color:"#ea580c", desc:"CBM Calculator" },
+    { id:119, name:"이미지 압축", url:"https://www.iloveimg.com/ko/compress-image", category:"docs", icon:"🖼️", color:"#ea580c", desc:"이미지 압축 (iLoveIMG)" },
+    { id:4, name:"DeepL", url:"https://www.deepl.com/ko/translator", category:"docs", icon:"🌐", color:"#ea580c", desc:"세계 최고 정확도 번역기" },
+    { id:6, name:"Google 번역", url:"https://translate.google.co.kr/?sl=auto&tl=ko&op=translate", category:"docs", icon:"🌐", color:"#ea580c", desc:"구글 번역" },
+    { id:1780377198724, name:"위하고", url:"https://WWW.wehago.com", category:"cat_1780376892224", icon:"🌐", color:"#6366f1", desc:"위하고 회계프로그램" },
+    { id:1780377984753, name:"홈텍스", url:"https://hometax.go.kr/websquare/websquare.html?w2xPath=/ui/pp/index_pp.xml&menuCd=index3", category:"cat_1780376892224", icon:"🏦", color:"#6366f1", desc:"국세청 홈텍스" },
+    { id:1780378038502, name:"우리은행", url:"https://nbi.wooribank.com/nbi/woori?withyou=bi", category:"cat_1780376892224", icon:"🏢", color:"#6366f1", desc:"우리은행 기업뱅킹" },
+    { id:1780378089436, name:"기업은행", url:"https://kiup.ibk.co.kr/uib/jsp/index.jsp", category:"cat_1780376892224", icon:"🏢", color:"#6366f1", desc:"기업은행 기업뱅킹" },
+    { id:1780378153243, name:"한국회계기준원 KAI", url:"https://www.kasb.or.kr/", category:"cat_1780376892224", icon:"🏢", color:"#6366f1", desc:"" },
+    { id:1780378242101, name:"한국 전자공시 시스템", url:"https://dart.fss.or.kr/", category:"cat_1780376892224", icon:"🌐", color:"#6366f1", desc:"DART 전자공시" },
+    { id:1780379128156, name:"한화토탈", url:"http://srm.htpchem.com/supplierLogin.screen", category:"cat_1780376904895", icon:"🔗", color:"#6366f1", desc:"한화토탈 구매사이트" },
+    { id:1780379150128, name:"롯데케미칼", url:"https://eproc.lottechem.com", category:"cat_1780376904895", icon:"🔗", color:"#6366f1", desc:"롯데케미칼 구매사이트" },
+    { id:1780556337693, name:"엘엑스하우시스", url:"https://opensupplier.lxhausys.com/spLogin.do", category:"cat_1780376904895", icon:"🔗", color:"#6366f1", desc:"엘엑스하우시스 구매사이트" },
+    { id:1780556366157, name:"화승", url:"https://hspf.hsnetw.com/", category:"cat_1780376904895", icon:"🔗", color:"#6366f1", desc:"화승 구매사이트" },
+    { id:1780556383137, name:"이노폴리텍", url:"https://innopolytech.poacloud.net", category:"cat_1780376904895", icon:"🔗", color:"#6366f1", desc:"이노폴리텍 구매사이트" },
+    { id:1780556478565, name:"금호폴리켐", url:"http://buyingplaza.polychem.co.kr/", category:"cat_1780376904895", icon:"🔗", color:"#6366f1", desc:"금호폴리켐 구매사이트" },
+    { id:1780556497953, name:"디렉스폴리머", url:"https://eprov.drexpolymer.com/login_ed.jsp", category:"cat_1780376904895", icon:"🔗", color:"#6366f1", desc:"디렉스폴리머 구매사이트" },
+    { id:1780558490685, name:"지에스칼텍스", url:"https://supplier.gscaltex.co.kr/", category:"cat_1780376904895", icon:"🔗", color:"#6366f1", desc:"지에스칼텍스 구매사이트" },
+    { id:1780558617483, name:"유한킴벌리", url:"https://supplier.coupahost.com/", category:"cat_1780376904895", icon:"🔗", color:"#6366f1", desc:"유한킴벌리 구매사이트" },
+    { id:1780558695361, name:"나이스비즈라인", url:"https://www.nicebizline.com/", category:"cat_1780376892224", icon:"🏢", color:"#6366f1", desc:"" },
   ],
 };
 
@@ -517,8 +536,24 @@ export default function App() {
 
   const [isLoaded, setIsLoaded] = useState(false);
   const [saveStatus, setSaveStatus] = useState("idle");
-  // 저장 직후 자기 저장 데이터가 다시 돌아오는 echo 방지용 ref
-  const lastSavedDataRef = useRef(null);
+
+  // ── 클라이언트 식별자 (자기가 저장한 변경 감지용)
+  const clientIdRef = useRef(Math.random().toString(36).slice(2) + Date.now().toString(36));
+  // 마지막으로 처리한 데이터의 hash (불필요한 setData 방지용)
+  const lastDataHashRef = useRef("");
+
+  // 정확한 hash 함수 - 데이터 전체를 비교
+  const hashData = (d) => {
+    if (!d) return "";
+    const str = JSON.stringify(d);
+    // simple hash 함수 (djb2)
+    let hash = 5381;
+    for (let i = 0; i < str.length; i++) {
+      hash = ((hash << 5) + hash) + str.charCodeAt(i);
+      hash = hash & hash; // 32bit 정수로 유지
+    }
+    return str.length + ":" + hash;
+  };
 
   // ── 앱 시작 시 Supabase에서 자동 불러오기
   useEffect(() => {
@@ -526,12 +561,13 @@ export default function App() {
       try {
         const { data: row, error } = await supabase
           .from("bookmarks")
-          .select("data")
+          .select("data, updated_at")
           .eq("id", "main")
           .single();
         if (!error && row && row.data) {
           if (row.data.categories && row.data.sites) {
-            lastSavedDataRef.current = JSON.stringify(row.data);
+            lastDataHashRef.current = hashData(row.data);
+            lastSeenUpdatedAtRef.current = row.updated_at;
             setData(row.data);
           }
         }
@@ -545,67 +581,103 @@ export default function App() {
 
   // ── 페이지 복귀 시 서버 최신 데이터 받아오기
   useEffect(() => {
-    const handleVisibilityChange = async () => {
-      if (document.visibilityState === "visible" && isLoaded) {
-        try {
-          const { data: row, error } = await supabase
-            .from("bookmarks")
-            .select("data")
-            .eq("id", "main")
-            .single();
-          if (!error && row && row.data && row.data.categories && row.data.sites) {
-            const remoteStr = JSON.stringify(row.data);
-            // 마지막 저장 데이터와 다르면 서버 데이터로 갱신
-            if (remoteStr !== lastSavedDataRef.current) {
-              console.log("[복귀 동기화] 서버 데이터로 갱신");
-              lastSavedDataRef.current = remoteStr;
-              setData(row.data);
-            }
+    const handleVisible = async () => {
+      if (document.visibilityState !== "visible" || !isLoaded) return;
+      try {
+        const { data: row, error } = await supabase
+          .from("bookmarks")
+          .select("data, updated_at")
+          .eq("id", "main")
+          .single();
+        if (!error && row && row.data && row.data.categories && row.data.sites) {
+          const newHash = hashData(row.data);
+          if (newHash !== lastDataHashRef.current) {
+            console.log("[복귀] 서버 최신 데이터로 갱신");
+            lastDataHashRef.current = newHash;
+            lastSeenUpdatedAtRef.current = row.updated_at;
+            setData(row.data);
           }
-        } catch (e) {
-          console.error("재동기화 실패", e);
         }
+      } catch (e) {
+        console.error("복귀 동기화 실패", e);
       }
     };
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    window.addEventListener("focus", handleVisibilityChange);
+    document.addEventListener("visibilitychange", handleVisible);
+    window.addEventListener("focus", handleVisible);
     return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-      window.removeEventListener("focus", handleVisibilityChange);
+      document.removeEventListener("visibilitychange", handleVisible);
+      window.removeEventListener("focus", handleVisible);
     };
   }, [isLoaded]);
 
-  // ── 데이터 변경 시 Supabase에 자동 저장 (echo 방지)
+  // ── 마지막으로 본 서버 시각 (stale 덮어쓰기 방지)
+  const lastSeenUpdatedAtRef = useRef(null);
+
+  // ── 데이터 변경 시 Supabase에 자동 저장
   useEffect(() => {
     if (!isLoaded) return;
 
-    const currentDataStr = JSON.stringify(data);
-
-    // 마지막으로 저장/수신한 데이터와 동일하면 저장 스킵 (무한 루프 방지)
-    if (currentDataStr === lastSavedDataRef.current) {
+    // 마지막 처리 데이터와 같으면 저장 안 함 (echo 방지)
+    const newHash = hashData(data);
+    if (newHash === lastDataHashRef.current) {
       return;
     }
 
     setSaveStatus("saving");
     const timer = setTimeout(async () => {
       try {
+        console.log("[저장 시작]", new Date().toLocaleTimeString());
+
+        // ★ stale 데이터 덮어쓰기 방지: 서버 최신 시각 확인
+        const { data: serverRow, error: checkError } = await supabase
+          .from("bookmarks")
+          .select("updated_at, data")
+          .eq("id", "main")
+          .single();
+
+        if (checkError) throw checkError;
+
+        // 서버 시각이 내가 마지막으로 본 시각보다 더 새로움 = 다른 사용자가 먼저 변경함
+        if (serverRow && lastSeenUpdatedAtRef.current &&
+            serverRow.updated_at > lastSeenUpdatedAtRef.current) {
+          console.warn("[저장 차단] 다른 사용자가 먼저 변경함. 서버 데이터로 갱신:", serverRow.updated_at, "vs", lastSeenUpdatedAtRef.current);
+          // 서버 데이터로 받아오고 저장 취소
+          if (serverRow.data && serverRow.data.categories && serverRow.data.sites) {
+            lastDataHashRef.current = hashData(serverRow.data);
+            lastSeenUpdatedAtRef.current = serverRow.updated_at;
+            setData(serverRow.data);
+          }
+          setSaveStatus("error");
+          setTimeout(() => setSaveStatus("idle"), 2000);
+          return;
+        }
+
+        // 정상 저장
+        const newTimestamp = new Date().toISOString();
         const { error } = await supabase
           .from("bookmarks")
-          .upsert({ id: "main", data: data, updated_at: new Date().toISOString() });
+          .upsert({
+            id: "main",
+            data: data,
+            updated_at: newTimestamp
+          });
         if (error) throw error;
-        lastSavedDataRef.current = currentDataStr; // 저장 완료 기록
+
+        lastDataHashRef.current = newHash;
+        lastSeenUpdatedAtRef.current = newTimestamp;
+        console.log("[저장 성공]", newTimestamp);
         setSaveStatus("saved");
         setTimeout(() => setSaveStatus("idle"), 1500);
       } catch (e) {
-        console.error("저장 실패", e);
+        console.error("[저장 실패]", e);
         setSaveStatus("error");
         setTimeout(() => setSaveStatus("idle"), 3000);
       }
-    }, 500); // 0.5초 디바운스
+    }, 800);
     return () => clearTimeout(timer);
   }, [data, isLoaded]);
 
-  // ── Supabase Realtime - 다른 사용자의 변경사항 즉시 동기화 (echo 방지)
+  // ── Supabase Realtime - 다른 사용자의 변경사항 즉시 동기화
   useEffect(() => {
     if (!isLoaded) return;
     const channel = supabase
@@ -614,17 +686,17 @@ export default function App() {
         "postgres_changes",
         { event: "*", schema: "public", table: "bookmarks", filter: "id=eq.main" },
         (payload) => {
-          if (payload.new && payload.new.data && payload.new.data.categories && payload.new.data.sites) {
-            const remoteStr = JSON.stringify(payload.new.data);
-            // 내가 방금 저장한 데이터가 다시 돌아온 거면 무시 (echo 방지)
-            if (remoteStr === lastSavedDataRef.current) {
-              return;
-            }
-            // 다른 사용자가 변경한 데이터 → 받아오기
-            console.log("[실시간 동기화] 다른 사용자의 변경 받음");
-            lastSavedDataRef.current = remoteStr;
-            setData(payload.new.data);
-          }
+          if (!payload.new || !payload.new.data) return;
+          if (!payload.new.data.categories || !payload.new.data.sites) return;
+
+          const newHash = hashData(payload.new.data);
+          // 내가 마지막으로 처리한 데이터와 같으면 무시 (echo 방지)
+          if (newHash === lastDataHashRef.current) return;
+
+          console.log("[실시간 동기화] 다른 사용자의 변경 받음");
+          lastDataHashRef.current = newHash;
+          if (payload.new.updated_at) lastSeenUpdatedAtRef.current = payload.new.updated_at;
+          setData(payload.new.data);
         }
       )
       .subscribe();
@@ -664,7 +736,7 @@ export default function App() {
           <div style={{width:32,height:32,borderRadius:9,
             background:"linear-gradient(135deg,#6366f1,#8b5cf6)",
             display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,
-            boxShadow:"0 2px 8px rgba(99,102,241,.35)"}}>🏢</div>
+            boxShadow:"0 2px 8px rgba(99,102,241,.35)"}}>🚢</div>
           {/* v32 - 일괄변경 디버그 */}
           {editingTitle ? (
             <input autoFocus value={data.title || ""}
