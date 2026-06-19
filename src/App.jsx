@@ -1,6 +1,12 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { supabase } from "./supabase";
 
+// ════════════════════════════════════════════════════════════
+// 🔐 관리자 비밀번호 (이 비밀번호를 알아야 편집 가능)
+// 접속 방법: https://hanbool-bookmarks.netlify.app/?admin=hanbool2026
+// ════════════════════════════════════════════════════════════
+const ADMIN_PASSWORD = "hanbool2026";
+
 const ICON_LIST = ["🤖","📦","🚢","⚓","🔎","📰","🏛","💱","📋","🔗","📊","📝","💬","⚙️","🎯","📌","☁️","🌐","🔑","🏢","✉️","📈","📉","🎨","🐙","🎥","📚","🔧","📱","🌍","🏦","📮","🗂","📁","🔐","🛳","✈️","🚛","🏗","📜"];
 
 const ACCENT_COLORS = ["#7c3aed","#2563eb","#0284c7","#059669","#d97706","#dc2626","#be185d","#16a34a","#ea580c","#0891b2","#9333ea","#65a30d"];
@@ -534,6 +540,21 @@ export default function App() {
   const [hovId,     setHovId]     = useState(null);
   const [delTarget, setDelTarget] = useState(null);
 
+  // 🔐 관리자 모드 - URL의 ?admin=비밀번호 또는 sessionStorage 확인
+  const [isAdmin, setIsAdmin] = useState(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const urlPwd = params.get("admin");
+      if (urlPwd === ADMIN_PASSWORD) {
+        sessionStorage.setItem("isAdmin", "true");
+        return true;
+      }
+      return sessionStorage.getItem("isAdmin") === "true";
+    } catch (e) {
+      return false;
+    }
+  });
+
   const [isLoaded, setIsLoaded] = useState(false);
   const [saveStatus, setSaveStatus] = useState("idle");
 
@@ -561,13 +582,12 @@ export default function App() {
       try {
         const { data: row, error } = await supabase
           .from("bookmarks")
-          .select("data, updated_at")
+          .select("data")
           .eq("id", "main")
-          .single();
+          .maybeSingle();
         if (!error && row && row.data) {
           if (row.data.categories && row.data.sites) {
             lastDataHashRef.current = hashData(row.data);
-            lastSeenUpdatedAtRef.current = row.updated_at;
             setData(row.data);
           }
         }
@@ -586,15 +606,14 @@ export default function App() {
       try {
         const { data: row, error } = await supabase
           .from("bookmarks")
-          .select("data, updated_at")
+          .select("data")
           .eq("id", "main")
-          .single();
+          .maybeSingle();
         if (!error && row && row.data && row.data.categories && row.data.sites) {
           const newHash = hashData(row.data);
           if (newHash !== lastDataHashRef.current) {
             console.log("[복귀] 서버 최신 데이터로 갱신");
             lastDataHashRef.current = newHash;
-            lastSeenUpdatedAtRef.current = row.updated_at;
             setData(row.data);
           }
         }
@@ -610,12 +629,15 @@ export default function App() {
     };
   }, [isLoaded]);
 
-  // ── 마지막으로 본 서버 시각 (stale 덮어쓰기 방지)
-  const lastSeenUpdatedAtRef = useRef(null);
-
-  // ── 데이터 변경 시 Supabase에 자동 저장
+  // ── 데이터 변경 시 Supabase에 자동 저장 (관리자 모드에서만)
   useEffect(() => {
     if (!isLoaded) return;
+
+    // 🔐 관리자가 아니면 저장 시도 자체를 안 함 - 충돌 차단!
+    if (!isAdmin) {
+      console.log("[저장 스킵] 읽기 전용 모드 (관리자 아님)");
+      return;
+    }
 
     // 마지막 처리 데이터와 같으면 저장 안 함 (echo 방지)
     const newHash = hashData(data);
@@ -627,45 +649,16 @@ export default function App() {
     const timer = setTimeout(async () => {
       try {
         console.log("[저장 시작]", new Date().toLocaleTimeString());
-
-        // ★ stale 데이터 덮어쓰기 방지: 서버 최신 시각 확인
-        const { data: serverRow, error: checkError } = await supabase
-          .from("bookmarks")
-          .select("updated_at, data")
-          .eq("id", "main")
-          .single();
-
-        if (checkError) throw checkError;
-
-        // 서버 시각이 내가 마지막으로 본 시각보다 더 새로움 = 다른 사용자가 먼저 변경함
-        if (serverRow && lastSeenUpdatedAtRef.current &&
-            serverRow.updated_at > lastSeenUpdatedAtRef.current) {
-          console.warn("[저장 차단] 다른 사용자가 먼저 변경함. 서버 데이터로 갱신:", serverRow.updated_at, "vs", lastSeenUpdatedAtRef.current);
-          // 서버 데이터로 받아오고 저장 취소
-          if (serverRow.data && serverRow.data.categories && serverRow.data.sites) {
-            lastDataHashRef.current = hashData(serverRow.data);
-            lastSeenUpdatedAtRef.current = serverRow.updated_at;
-            setData(serverRow.data);
-          }
-          setSaveStatus("error");
-          setTimeout(() => setSaveStatus("idle"), 2000);
-          return;
-        }
-
-        // 정상 저장
-        const newTimestamp = new Date().toISOString();
         const { error } = await supabase
           .from("bookmarks")
           .upsert({
             id: "main",
             data: data,
-            updated_at: newTimestamp
+            updated_at: new Date().toISOString()
           });
         if (error) throw error;
-
         lastDataHashRef.current = newHash;
-        lastSeenUpdatedAtRef.current = newTimestamp;
-        console.log("[저장 성공]", newTimestamp);
+        console.log("[저장 성공]");
         setSaveStatus("saved");
         setTimeout(() => setSaveStatus("idle"), 1500);
       } catch (e) {
@@ -675,7 +668,7 @@ export default function App() {
       }
     }, 800);
     return () => clearTimeout(timer);
-  }, [data, isLoaded]);
+  }, [data, isLoaded, isAdmin]);
 
   // ── Supabase Realtime - 다른 사용자의 변경사항 즉시 동기화
   useEffect(() => {
@@ -695,7 +688,6 @@ export default function App() {
 
           console.log("[실시간 동기화] 다른 사용자의 변경 받음");
           lastDataHashRef.current = newHash;
-          if (payload.new.updated_at) lastSeenUpdatedAtRef.current = payload.new.updated_at;
           setData(payload.new.data);
         }
       )
@@ -738,7 +730,7 @@ export default function App() {
             display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,
             boxShadow:"0 2px 8px rgba(99,102,241,.35)"}}>🏢</div>
           {/* v32 - 일괄변경 디버그 */}
-          {editingTitle ? (
+          {editingTitle && isAdmin ? (
             <input autoFocus value={data.title || ""}
               onChange={e=>setData(p=>({...p,title:e.target.value}))}
               onBlur={()=>setEditingTitle(false)}
@@ -748,14 +740,15 @@ export default function App() {
                 border:"1.5px solid #6366f1",borderRadius:7,padding:"3px 9px",
                 outline:"none",fontFamily:"inherit",minWidth:200,background:"#fff"}}/>
           ) : (
-            <span onClick={()=>setEditingTitle(true)} title="클릭하여 제목 편집"
-              style={{fontWeight:800,fontSize:17,cursor:"pointer",
+            <span onClick={()=>{if(isAdmin)setEditingTitle(true);}}
+              title={isAdmin ? "클릭하여 제목 편집" : ""}
+              style={{fontWeight:800,fontSize:17,cursor:isAdmin?"pointer":"default",
                 background:"linear-gradient(90deg,#6366f1,#8b5cf6)",
                 WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",
                 letterSpacing:"-0.3px",padding:"3px 6px",borderRadius:7,
                 transition:"opacity .15s"}}
-              onMouseEnter={e=>e.currentTarget.style.opacity="0.7"}
-              onMouseLeave={e=>e.currentTarget.style.opacity="1"}>
+              onMouseEnter={e=>{if(isAdmin)e.currentTarget.style.opacity="0.7";}}
+              onMouseLeave={e=>{if(isAdmin)e.currentTarget.style.opacity="1";}}>
               {data.title || "CSR 바로가기"}
             </span>
           )}
@@ -797,23 +790,50 @@ export default function App() {
         </div>
         <div style={{flex:1}}/>
 
-        <button onClick={()=>setSettings(true)} style={{
-          display:"flex",alignItems:"center",gap:6,background:"#f8fafc",
-          border:"1.5px solid #e2e8f0",borderRadius:10,padding:"7px 14px",color:"#64748b",
-          fontSize:13,fontWeight:600,cursor:"pointer",whiteSpace:"nowrap",fontFamily:"inherit",transition:"all .15s"}}
-          onMouseEnter={e=>{e.currentTarget.style.borderColor="#6366f1";e.currentTarget.style.color="#6366f1"}}
-          onMouseLeave={e=>{e.currentTarget.style.borderColor="#e2e8f0";e.currentTarget.style.color="#64748b"}}>
-          ⚙️ 관리
-        </button>
-
-        <button onClick={()=>setSiteModal("add")} style={{
-          display:"flex",alignItems:"center",gap:6,
-          background:"linear-gradient(135deg,#6366f1,#8b5cf6)",
-          border:"none",borderRadius:10,padding:"7px 16px",color:"#fff",
-          fontSize:13,fontWeight:700,cursor:"pointer",whiteSpace:"nowrap",
-          boxShadow:"0 3px 12px rgba(99,102,241,.35)",fontFamily:"inherit"}}>
-          + 추가
-        </button>
+        {/* 🔐 관리자 모드 표시 뱃지 */}
+        {isAdmin ? (
+          <>
+            <div style={{fontSize:11,color:"#7c3aed",background:"#f3e8ff",
+              border:"1px solid #d8b4fe",borderRadius:20,padding:"3px 10px",
+              fontWeight:700,whiteSpace:"nowrap"}}>
+              🔓 관리자 모드
+            </div>
+            <button onClick={()=>setSettings(true)} style={{
+              display:"flex",alignItems:"center",gap:6,background:"#f8fafc",
+              border:"1.5px solid #e2e8f0",borderRadius:10,padding:"7px 14px",color:"#64748b",
+              fontSize:13,fontWeight:600,cursor:"pointer",whiteSpace:"nowrap",fontFamily:"inherit",transition:"all .15s"}}
+              onMouseEnter={e=>{e.currentTarget.style.borderColor="#6366f1";e.currentTarget.style.color="#6366f1"}}
+              onMouseLeave={e=>{e.currentTarget.style.borderColor="#e2e8f0";e.currentTarget.style.color="#64748b"}}>
+              ⚙️ 관리
+            </button>
+            <button onClick={()=>setSiteModal("add")} style={{
+              display:"flex",alignItems:"center",gap:6,
+              background:"linear-gradient(135deg,#6366f1,#8b5cf6)",
+              border:"none",borderRadius:10,padding:"7px 16px",color:"#fff",
+              fontSize:13,fontWeight:700,cursor:"pointer",whiteSpace:"nowrap",
+              boxShadow:"0 3px 12px rgba(99,102,241,.35)",fontFamily:"inherit"}}>
+              + 추가
+            </button>
+            <button onClick={()=>{
+              if(window.confirm("관리자 모드를 종료할까요?")) {
+                sessionStorage.removeItem("isAdmin");
+                window.location.href = window.location.pathname;
+              }
+            }} title="관리자 모드 종료" style={{
+              fontSize:11,padding:"6px 10px",borderRadius:8,
+              border:"1px solid #fecaca",background:"#fff1f2",color:"#dc2626",
+              cursor:"pointer",fontWeight:600,fontFamily:"inherit",whiteSpace:"nowrap"}}>
+              🔒 잠금
+            </button>
+          </>
+        ) : (
+          <div style={{fontSize:11,color:"#64748b",background:"#f1f5f9",
+            border:"1px solid #cbd5e1",borderRadius:20,padding:"3px 10px",
+            fontWeight:600,whiteSpace:"nowrap"}}
+            title="편집하려면 URL에 ?admin=비밀번호 를 입력하세요">
+            👁️ 읽기 전용
+          </div>
+        )}
       </div>
 
       <div style={{display:"flex",minHeight:"calc(100vh - 58px)"}}>
@@ -893,7 +913,7 @@ export default function App() {
                         onMouseEnter={()=>setHovId(site.id)}
                         onMouseLeave={()=>setHovId(null)}>
 
-                        {hov && (
+                        {hov && isAdmin && (
                           <div style={{position:"absolute",top:8,right:8,display:"flex",gap:3}}
                             onClick={e=>{e.stopPropagation();e.preventDefault();}}>
                             <button onClick={(e)=>{e.preventDefault();setSiteModal(site);}} style={actionBtn} title="편집">✏️</button>
